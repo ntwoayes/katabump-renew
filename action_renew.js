@@ -565,7 +565,7 @@ async function ensureScreenshotsDir() {
             await page.waitForTimeout(3000);
             await solveTurnstileIfPresent(page, "登录阶段", 10, 5000);
 
-            console.log(`正在输入凭据...${user.username} / ${user.password}`);
+            console.log('正在输入凭据...');
             try {
                 const emailInput = page.getByRole('textbox', { name: 'Email' });
                 await emailInput.waitFor({ state: 'visible', timeout: 5000 });
@@ -580,7 +580,7 @@ async function ensureScreenshotsDir() {
                 // 检查登录错误
                 try {
                     const errorMsg = page.getByText('Incorrect password or no account');
-                    if (await errorMsg.isVisible({ timeout: 3000 })) {
+                    if (await errorMsg.isVisible({ timeout: 5000 })) {
                         console.error(`   >> ❌ 登录失败: 账号或密码错误`);
                         runStatus = 'login_failed';
                         blockMessage = 'Incorrect password or no account';
@@ -597,9 +597,9 @@ async function ensureScreenshotsDir() {
             // 2. 登录后进入 dashboard
             console.log('正在寻找 "See" 链接...');
             try {
-                await page.getByRole('link', { name: 'See' }).first().waitFor({ timeout: 15000 });
+                await page.getByRole('a', { name: 'See' }).first().waitFor({ timeout: 15000 });
                 await page.waitForTimeout(1000);
-                await page.getByRole('link', { name: 'See' }).first().click();
+                await page.getByRole('a', { name: 'See' }).first().click();
             } catch (e) {
                 console.log('未找到 "See" 按钮 (可能登录未成功或界面变动)。');
                 runStatus = 'login_failed';
