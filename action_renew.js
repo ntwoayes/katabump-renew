@@ -597,9 +597,18 @@ async function ensureScreenshotsDir() {
             // 2. 登录后进入 dashboard
             console.log('正在寻找 "See" 链接...');
             try {
-                await page.getByRole('a', { name: 'See' }).first().waitFor({ timeout: 15000 });
-                await page.waitForTimeout(1000);
-                await page.getByRole('a', { name: 'See' }).first().click();
+                // await page.getByRole('link', { name: 'See' }).first().waitFor({ timeout: 15000 });
+                // await page.waitForTimeout(1000);
+                // await page.getByRole('link', { name: 'See' }).first().click();
+
+                // 1. 等待包含 "See" 的 <a> 标签加载并可见
+                const seeLink = page.locator('a:has-text("See")');
+                await seeLink.waitFor({ state: 'visible', timeout: 15000 });
+
+                // 2. 获取第一个匹配到的链接的 href 属性
+                const firstLinkUrl = await seeLink.first().getAttribute('href');
+                console.log('读取到的链接:', firstLinkUrl);
+                firstLinkUrl.click();
             } catch (e) {
                 console.log('未找到 "See" 按钮 (可能登录未成功或界面变动)。');
                 runStatus = 'login_failed';
