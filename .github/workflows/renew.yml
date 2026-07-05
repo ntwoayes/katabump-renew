@@ -37,7 +37,7 @@ jobs:
           fi
 
           echo "Downloading Webshare proxy list..."
-          curl -fsSL "${WEBSHARE_PROXY_LIST_URL}" -o proxies.txt
+          curl -fsSL --noproxy "*" "${WEBSHARE_PROXY_LIST_URL}" -o proxies.txt
           echo "Proxy list downloaded. Total lines: $(wc -l < proxies.txt)"
 
           PROXY_LINE=$(grep -v '^[[:space:]]*$' proxies.txt | shuf -n 1)
