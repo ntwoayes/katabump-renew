@@ -574,7 +574,7 @@ async function ensureScreenshotsDir() {
                 const pwdInput = page.getByRole('textbox', { name: 'Password' });
                 await pwdInput.fill(user.password);
 
-                await page.waitForTimeout(500);
+                await page.waitForTimeout(10000);
                 await page.getByRole('button', { name: 'Login', exact: true }).click();
 
                 // 检查登录错误
