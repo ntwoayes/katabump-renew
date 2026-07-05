@@ -567,15 +567,28 @@ async function ensureScreenshotsDir() {
 
             console.log('正在输入凭据...');
             try {
-                const emailInput = page.getByRole('textbox', { name: 'Email' });
+                const emailInput = page.getByLabel('Email');
+                const pwdInput = page.getByLabel('Password');
+                // const emailInput = page.getByRole('textbox', { name: 'Email' });
                 await emailInput.waitFor({ state: 'visible', timeout: 5000 });
                 await emailInput.fill(user.username);
 
-                const pwdInput = page.getByRole('textbox', { name: 'Password' });
+                // const pwdInput = page.getByRole('textbox', { name: 'Password' });
                 await pwdInput.fill(user.password);
 
-                await page.waitForTimeout(10000);
+                await page.waitForTimeout(5000);
                 await page.getByRole('button', { name: 'Login', exact: true }).click();
+                // 假设登录成功后 URL 会变为 /servers 或不再包含 /auth/login
+                try {
+                    await page.waitForURL('**/servers/**', { timeout: 10000 });
+                    console.log('登录成功，已跳转到服务器列表页');
+                } catch (e) {
+                    // 如果 URL 没变，检查是否停留在登录页并报错
+                    if (page.url().includes('/auth/login')) {
+                        console.error('登录超时或失败，页面未跳转');
+                        // 这里可以再次截图确认错误信息
+                    }
+                }
 
                 // 检查登录错误
                 try {
@@ -597,18 +610,9 @@ async function ensureScreenshotsDir() {
             // 2. 登录后进入 dashboard
             console.log('正在寻找 "See" 链接...');
             try {
-                // await page.getByRole('link', { name: 'See' }).first().waitFor({ timeout: 15000 });
-                // await page.waitForTimeout(1000);
-                // await page.getByRole('link', { name: 'See' }).first().click();
-
-                // 1. 等待包含 "See" 的 <a> 标签加载并可见
-                const seeLink = page.locator('a:has-text("See")');
-                await seeLink.waitFor({ state: 'visible', timeout: 15000 });
-
-                // 2. 获取第一个匹配到的链接的 href 属性
-                const firstLinkUrl = await seeLink.first().getAttribute('href');
-                console.log('读取到的链接:', firstLinkUrl);
-                firstLinkUrl.click();
+                await page.getByRole('link', { name: 'See' }).first().waitFor({ timeout: 15000 });
+                await page.waitForTimeout(1000);
+                await page.getByRole('link', { name: 'See' }).first().click();
             } catch (e) {
                 console.log('未找到 "See" 按钮 (可能登录未成功或界面变动):', e.message);
                 runStatus = 'login_failed';
