@@ -610,7 +610,7 @@ async function ensureScreenshotsDir() {
                 console.log('读取到的链接:', firstLinkUrl);
                 firstLinkUrl.click();
             } catch (e) {
-                console.log('未找到 "See" 按钮 (可能登录未成功或界面变动)。');
+                console.log('未找到 "See" 按钮 (可能登录未成功或界面变动):', e.message);
                 runStatus = 'login_failed';
                 const photoDir = await ensureScreenshotsDir();
                 await page.screenshot({ path: path.join(photoDir, `see_btn_not_found_${user.username.replace(/[^a-z0-9]/gi, '_')}.png`), fullPage: true });
