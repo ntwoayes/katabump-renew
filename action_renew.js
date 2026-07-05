@@ -565,7 +565,7 @@ async function ensureScreenshotsDir() {
             await page.waitForTimeout(3000);
             await solveTurnstileIfPresent(page, "登录阶段", 10, 5000);
 
-            console.log('正在输入凭据...{user.username} / {user.password}');
+            console.log(`正在输入凭据...${user.username} / ${user.password}`);
             try {
                 const emailInput = page.getByRole('textbox', { name: 'Email' });
                 await emailInput.waitFor({ state: 'visible', timeout: 5000 });
